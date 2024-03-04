@@ -1,14 +1,17 @@
 package Assignment01;
 import java.awt.*;
-import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.Throwable;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.awt.event.*;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import static Assignment01.Library.bu;
 import static Assignment01.Library.nu;
 import static Assignment01.Library.Books;
@@ -16,6 +19,8 @@ import static Assignment01.Library.Users;
 
 public class Main {
     static JFrame frame = new JFrame("Library Management System");
+    private static final String USERS_JSON_FILE = "users.json";
+    private static final String BOOKS_JSON_FILE = "books.json";
     static Library Library1 = new Library();
     static User current_user;
     static JTable table;
@@ -24,47 +29,14 @@ public class Main {
     private static int userPass;
 
     public static void main(String[] args){
-        String file_Name_1 = "Users.txt";
-        String file_Name_2 = "Books.txt";
-        File file1 = new File(file_Name_1);
-        File file2 = new File(file_Name_2);
-
-        try {
-            if (!file1.exists()) {
-                file1.createNewFile();
-                System.out.println("File created: " + file_Name_1);
-            } /*else {
-                BufferedReader reader = new BufferedReader(new FileReader(file1));
-                String line;
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-                String[] dataArray = stringBuilder.toString().split("\n");
-                reader.close();
-            }*/
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (!file2.exists()) {
-                file2.createNewFile();
-                System.out.println("File created: " + file_Name_2);
-            } /*else {
-                BufferedReader reader = new BufferedReader(new FileReader(file1));
-                String line;
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-                String[] dataArray = stringBuilder.toString().split("\n");
-                reader.close();
-            }*/
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadData(Users,Books);
         WelcomeMenu();
-
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveData(Users, Books);
+            }
+        });
     }
     public static void WelcomeMenu(){
         JButton continueButton;
@@ -97,7 +69,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Action to create new user goes here
-                createUser();
+                createUser(0);
             }
         });
 
@@ -150,17 +122,34 @@ public class Main {
                 displayBookCollection();
             }
         });
-        JButton buyBookButton = new JButton("Buy Book");
         JButton borrowBookButton = new JButton("Borrow Book");
+        borrowBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                borrowBook(1);
+            }
+        });
         JButton searchBookButton = new JButton("Search Book");
+        searchBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Action to create new user goes here
+                searchBook();
+            }
+        });
         JButton returnBookButton = new JButton("Return Book");
+        returnBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Action to create new user goes here
+                returnBook(1);
+            }
+        });
         lookCatalogButton.setFont(new Font("Arial", Font.BOLD, 14));
-        buyBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         searchBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         returnBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         borrowBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         menuPanel.add(lookCatalogButton);
-        menuPanel.add(buyBookButton);
         menuPanel.add(borrowBookButton);
         menuPanel.add(returnBookButton);
         menuPanel.add(searchBookButton);
@@ -169,7 +158,7 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void createUser(){
+    public static void createUser(int x){
         JPanel userInfoPanel = new JPanel(new GridLayout(3, 2));
 
         JLabel nameLabel = new JLabel("Name:");
@@ -186,7 +175,11 @@ public class Main {
             Library1.addUser(temp);
             String message = "User created successfully! Note Down ID: " + temp.GetUserID();
             JOptionPane.showMessageDialog(frame, message );
-            LoginDetails();
+            if(x==0) {
+                LoginDetails();
+            }else{
+                adminView();
+            }
         });
 
         // Add components to the panel
@@ -284,12 +277,24 @@ public class Main {
             }
         });
         JButton removeBookButton = new JButton("Remove Book");
+        removeBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeBook();
+            }
+        });
         JButton removeUserButton = new JButton("Remove User");
+        removeUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeUser();
+            }
+        });
         JButton addUserButton = new JButton("Add User");
         addUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createUser();
+                createUser(1);
             }
         });
         JButton lookCatalogButton = new JButton("Book Collection");
@@ -299,13 +304,30 @@ public class Main {
                 displayBookCollection();
             }
         });
-        JButton buyBookButton = new JButton("Buy Book");
         JButton borrowBookButton = new JButton("Borrow Book");
+        borrowBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                borrowBook(0);
+            }
+        });
+
         JButton searchBookButton = new JButton("Search Book");
+        searchBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchBook();
+            }
+        });
         JButton returnBookButton = new JButton("Return Book");
+        returnBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                returnBook(0);
+            }
+        });
 
         lookCatalogButton.setFont(new Font("Arial", Font.BOLD, 14));
-        buyBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         borrowBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         returnBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         searchBookButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -313,13 +335,12 @@ public class Main {
         addBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         removeBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         removeUserButton.setFont(new Font("Arial", Font.BOLD, 14));
-        NewMenuPanel.add(buyBookButton);
+        NewMenuPanel.add(borrowBookButton);
         NewMenuPanel.add(lookCatalogButton);
         NewMenuPanel.add(searchBookButton);
-        NewMenuPanel.add(borrowBookButton);
+        NewMenuPanel.add(returnBookButton);
         NewMenuPanel.add(addUserButton);
         NewMenuPanel.add(removeUserButton);
-        NewMenuPanel.add(returnBookButton);
         NewMenuPanel.add(addBookButton);
         NewMenuPanel.add(removeBookButton);
 
@@ -361,15 +382,32 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void removeUser(int id){
-        for(User i:Users){
-            if(i.GetUserID()==id){
-                Users.remove(i);
+    public static void removeUser(){
+        JPanel removeUserPanel = new JPanel(new GridLayout(3,1));
+        JLabel idLabel = new JLabel("ID:");
+        JTextField idField = new JTextField();
+        JButton removeButton = new JButton("Remove");
+        removeButton.addActionListener(e -> {
+            // Retrieve the entered name and contact information
+            int id = Integer.parseInt(idField.getText());
+            if(Library1.removeUser(id)==1){
+                JOptionPane.showMessageDialog(frame, "Removed User Successfully!");
+                adminView();
+            }else{
+                JOptionPane.showMessageDialog(frame, "Failed");
+                adminView();
             }
-        }
+        });
+        removeUserPanel.add(idLabel);
+        removeUserPanel.add(idField);
+        removeUserPanel.add(removeButton);
+        frame.getContentPane().removeAll();
+        frame.add(removeUserPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
     }
     public static void addBook(){
-        JPanel addBookPanel = new JPanel(new GridLayout(3, 2));
+        JPanel addBookPanel = new JPanel(new GridLayout(4, 1));
 
         JLabel nameLabel = new JLabel("Title:");
         JTextField nameField = new JTextField();
@@ -404,5 +442,235 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    public static void removeBook(){
+        JPanel removeBookPanel = new JPanel(new GridLayout(2, 1));
 
+        JLabel idLabel = new JLabel("Book ID:");
+        JTextField idField = new JTextField();
+
+        JButton removeButton = new JButton("Remove");
+        removeButton.addActionListener(e -> {
+            int x = Integer.parseInt(idField.getText());
+            if(Library1.removeBook(x)==1) {
+                JOptionPane.showMessageDialog(frame, "Removed Book Successfully!");
+                adminView();
+            }else{
+                JOptionPane.showMessageDialog(frame, "Failed!");
+                adminView();
+            }
+        });
+
+        // Add components to the panel
+        removeBookPanel.add(idLabel);
+        removeBookPanel.add(idField);
+        removeBookPanel.add(removeButton);
+
+        frame.getContentPane().removeAll();
+        frame.add(removeBookPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+    public static void searchBook() {
+        JCheckBox authorCheckbox = new JCheckBox("Search by Author");
+        JCheckBox titleCheckbox = new JCheckBox("Search by Title");
+        JCheckBox idCheckbox = new JCheckBox("Search by User ID");
+
+        // Create a panel to hold the checkboxes
+        JPanel checkboxPanel = new JPanel(new GridLayout(3, 1));
+        checkboxPanel.add(authorCheckbox);
+        checkboxPanel.add(titleCheckbox);
+        checkboxPanel.add(idCheckbox);
+
+        // Show the checkbox panel in a dialog
+        int option = JOptionPane.showConfirmDialog(null, checkboxPanel, "Choose Search Options", JOptionPane.OK_CANCEL_OPTION);
+
+        // Check if "OK" was clicked and process user's choice
+        if (option == JOptionPane.OK_OPTION) {
+            if (authorCheckbox.isSelected()) {
+                // Create a new panel to hold text fields for author input
+                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
+                JLabel authorLabel = new JLabel("Author:");
+                JTextField authorField = new JTextField();
+                inputPanel.add(authorLabel);
+                inputPanel.add(authorField);
+
+                // Show the input panel in a dialog
+                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter Author Name", JOptionPane.OK_CANCEL_OPTION);
+                if (inputOption == JOptionPane.OK_OPTION) {
+                    String authorInput = authorField.getText();
+                    if (!Library1.SearchBookByAuthor(authorInput).isEmpty()) {
+                        JOptionPane.showMessageDialog(null, Library1.SearchBookByAuthor(authorInput));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No books found by this author!");
+                    }
+                    adminView();
+                }
+            }
+            if (titleCheckbox.isSelected()) {
+                // Create a new panel to hold text fields for title input
+                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
+                JLabel titleLabel = new JLabel("Title:");
+                JTextField titleField = new JTextField();
+                inputPanel.add(titleLabel);
+                inputPanel.add(titleField);
+
+                // Show the input panel in a dialog
+                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter Title", JOptionPane.OK_CANCEL_OPTION);
+                if (inputOption == JOptionPane.OK_OPTION) {
+                    String titleInput = titleField.getText();
+                    if (!Library1.SearchBookByTitle(titleInput).isEmpty()) {
+                        JOptionPane.showMessageDialog(null, Library1.SearchBookByTitle(titleInput));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No books found with this title!");
+                    }
+                    adminView();
+                }
+            }
+            if (idCheckbox.isSelected()) {
+                // Create a new panel to hold text fields for ID input
+                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
+                JLabel idLabel = new JLabel("ID:");
+                JTextField idField = new JTextField();
+                inputPanel.add(idLabel);
+                inputPanel.add(idField);
+
+                // Show the input panel in a dialog
+                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter User ID", JOptionPane.OK_CANCEL_OPTION);
+                if (inputOption == JOptionPane.OK_OPTION) {
+                    int idInput = Integer.parseInt(idField.getText());
+                    String userData = Library1.SearchBookByUserID(idInput);
+                    if (!userData.isEmpty()) {
+                        // Display data in tabular form
+                        String[] columnNames = {"Title", "BookID", "Author", "Genre", "Available"};
+                        String[] rowData = userData.split("\n");
+                        Object[][] tableData = new Object[rowData.length][columnNames.length];
+
+
+                            for (int j = 0; j < columnNames.length && j < rowData.length; j++) {
+                                tableData[0][j] = rowData[j];
+                            }
+
+                        JTable table = new JTable(tableData, columnNames);
+                        JOptionPane.showMessageDialog(null, new JScrollPane(table), "Books", JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No books found with this user ID!");
+                    }
+                    adminView();
+                }
+
+            }
+
+        }
+    }
+    public static void returnBook(int x){
+        // Create components
+        JLabel bookIdLabel = new JLabel("Book ID:");
+        JTextField bookIdField = new JTextField(10);
+        JLabel userIdLabel = new JLabel("User ID:");
+        JTextField userIdField = new JTextField(10);
+        JButton returnButton = new JButton("Return");
+        returnButton.addActionListener(e -> {
+            // Retrieve the entered name and contact information
+            int bid = Integer.parseInt(bookIdField.getText());
+            int uid = Integer.parseInt(userIdField.getText());
+            if(Library1.returnBook(bid,uid)==1){
+                JOptionPane.showMessageDialog(frame, "Returned Book Successfully!");
+            }else{
+                JOptionPane.showMessageDialog(frame, "Return Failed!");
+            }
+            if(x==0){
+                adminView();
+            }else{
+                Menu();
+            }
+        });
+        // Create panel to hold components
+        JPanel returnPanel = new JPanel();
+        returnPanel.setLayout(new GridLayout(4, 2));
+        returnPanel.add(bookIdLabel);
+        returnPanel.add(bookIdField);
+        returnPanel.add(userIdLabel);
+        returnPanel.add(userIdField);
+        returnPanel.add(returnButton);
+        frame.getContentPane().removeAll();
+        frame.add(returnPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+    public static void borrowBook(int x){
+        // Create components
+        JLabel bookIdLabel = new JLabel("Book ID:");
+        JTextField bookIdField = new JTextField(10);
+        JLabel userIdLabel = new JLabel("User ID:");
+        JTextField userIdField = new JTextField(10);
+        JButton returnButton = new JButton("Check Out");
+        returnButton.addActionListener(e -> {
+            // Retrieve the entered name and contact information
+            int bid = Integer.parseInt(bookIdField.getText());
+            int uid = Integer.parseInt(userIdField.getText());
+            if(Library1.checkOut(bid,uid)==1){
+                JOptionPane.showMessageDialog(frame, "Checked Book Successfully!");
+            }else{
+                JOptionPane.showMessageDialog(frame, "Check out failed!");
+            }
+            if(x==0){
+                adminView();
+            }else{
+                Menu();
+            }
+        });
+        // Create panel to hold components
+        JPanel borrowBookPanel = new JPanel();
+        borrowBookPanel.setLayout(new GridLayout(4, 2));
+        borrowBookPanel.add(bookIdLabel);
+        borrowBookPanel.add(bookIdField);
+        borrowBookPanel.add(userIdLabel);
+        borrowBookPanel.add(userIdField);
+        borrowBookPanel.add(returnButton);
+        frame.getContentPane().removeAll();
+        frame.add(borrowBookPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    public static void saveData(List<User> users, List<Book> books) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        try (Writer writer = new FileWriter(USERS_JSON_FILE)) {
+            gson.toJson(users, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (Writer writer = new FileWriter(BOOKS_JSON_FILE)) {
+            gson.toJson(books, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Load data from JSON files and append to array lists, also count the number of objects loaded
+    public static void loadData(List<User> users, List<Book> books) {
+        Gson gson = new Gson();
+        try (Reader reader = new FileReader(USERS_JSON_FILE)) {
+            Type userListType = new TypeToken<ArrayList<User>>() {}.getType();
+            ArrayList<User> loadedUsers = gson.fromJson(reader, userListType);
+            if (loadedUsers != null) {
+                users.addAll(loadedUsers);
+                nu = loadedUsers.size()+1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (Reader reader = new FileReader(BOOKS_JSON_FILE)) {
+            Type bookListType = new TypeToken<ArrayList<Book>>() {}.getType();
+            ArrayList<Book> loadedBooks = gson.fromJson(reader, bookListType);
+            if (loadedBooks != null) {
+                books.addAll(loadedBooks);
+                bu = loadedBooks.size()+1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
