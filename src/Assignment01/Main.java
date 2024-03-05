@@ -11,26 +11,41 @@ import javax.swing.table.DefaultTableModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import static Assignment01.Library.bu;
 import static Assignment01.Library.nu;
 import static Assignment01.Library.Books;
 import static Assignment01.Library.Users;
-
 public class Main {
+    /**
+     Main Window that will be used for GUI
+     */
     static JFrame frame = new JFrame("Library Management System");
+    /**
+     Name of JSON file that will store Users
+     */
     private static final String USERS_JSON_FILE = "users.json";
+    /**
+     Name of JSON file that will store Books
+     */
     private static final String BOOKS_JSON_FILE = "books.json";
+    /**
+     The only instance of Library that will handle library management
+     */
     static Library Library1 = new Library();
-    static User current_user;
-    static JTable table;
-    static DefaultTableModel tableModel;
+    /**
+     User ID of Logged In User
+     */
     private static int userId;
-    private static int userPass;
-
+    /**
+     Password For Managing Library
+     */
+    private static int librarianPass;
     public static void main(String[] args) {
+        //Loads data from JSONs to ArrayLists
         loadData(Users, Books);
+        //Displays Welcome Menu
         WelcomeMenu();
+        //Method to save data from ArrayLists to JSON Files upon closing of Main JFrame Window
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -38,35 +53,40 @@ public class Main {
             }
         });
     }
-
+    //Display Welcome Menu to User
     public static void WelcomeMenu() {
-        JButton continueButton;
+        // Setting the layout of the 'frame' to BorderLayout to organize components
         frame.setLayout(new BorderLayout());
-
-//        JPanel menuPanel;
+        // Creating a JPanel named 'welcomePanel' with a GridLayout of 2 rows, 1 column, and spacing of 10 pixels
         JPanel welcomePanel = new JPanel(new GridLayout(2, 1, 10, 10));
-        JLabel welcomeLabel = new JLabel("Welcome to the Library!");
-        welcomePanel.add(welcomeLabel);
-        continueButton = new JButton("Continue");
-        welcomePanel.add(continueButton);
+        //Creating a Welcome Label
+        JLabel welcomeLabel = new JLabel("Welcome to the Library!",SwingConstants.CENTER);
+        //Creating a Continue Button
+        JButton continueButton = new JButton("Continue");
+        //Method to call next panel on button click
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LoginDetails();
             }
         });
-
+        //Append Button and Label to the Panel
+        welcomePanel.add(welcomeLabel);
+        welcomePanel.add(continueButton);
+        //Append Panel to Main Frame and adjust properties of Frame
         frame.add(welcomePanel, BorderLayout.NORTH);
         frame.setSize(300, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame on screen
         frame.setVisible(true);
     }
-
+    //Display Login Menu to User
     public static void LoginDetails() {
+        //Creating a JPanel named 'userPanel' with a GridLayout of 4 rows and 1 column
         JPanel userPanel = new JPanel(new GridLayout(4, 1));
-
+        //Creating a Create User button
         JButton createUserButton = new JButton("Create New User");
+        //Method to call Create User panel on button click
         createUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,23 +94,27 @@ public class Main {
                 createUser(0);
             }
         });
-
+        //Creating a Login button
         JButton loginButton = new JButton("Login");
+        //Method to call Login panel on button click
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 login();
             }
         });
+        //Creating a Manage Library Button
         JButton adminButton = new JButton("Manage Library");
+        //Method to call Admin panel on button click
         adminButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Authenticate();
             }
         });
-
+        //Creating a Forgot ID Button
         JButton forgotIDButton = new JButton("Forgot ID?");
+        //Method to call Forget ID panel on button click
         forgotIDButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,81 +123,66 @@ public class Main {
             }
         });
 
+        //Append all items to the panel
         userPanel.add(createUserButton);
         userPanel.add(loginButton);
         userPanel.add(adminButton);
         userPanel.add(forgotIDButton);
+
         // Center align text and buttons
         createUserButton.setHorizontalAlignment(SwingConstants.CENTER);
         loginButton.setHorizontalAlignment(SwingConstants.CENTER);
         forgotIDButton.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Center align panel
+        // Center align panel and append to main frame
         userPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.getContentPane().removeAll();
         frame.add(userPanel, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
     }
-
+    // Method to display the main menu options for users
     public static void Menu() {
+        // Create a panel to hold menu options
         JPanel menuPanel = new JPanel(new GridLayout(5, 1, 10, 10));
-        JButton lookCatalogButton = new JButton("Book Collection");
-        lookCatalogButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Action to create new user goes here
-                displayBookCollection(0);
-            }
-        });
+
+        // Create buttons for different menu options
+        JButton lookCatalogButton = new JButton("Browse Books");
         JButton borrowBookButton = new JButton("Borrow Book");
-        borrowBookButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                borrowBook(1);
-            }
-        });
-        JButton searchBookButton = new JButton("Search Book");
-        searchBookButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Action to create new user goes here
-                searchBook(0);
-            }
-        });
         JButton returnBookButton = new JButton("Return Book");
-        returnBookButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Action to create new user goes here
-                returnBook(1);
-            }
-        });
+        JButton searchBookButton = new JButton("Search Book");
         JButton returnHomeButton = new JButton("Log Out");
-        returnHomeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "Logged out successfully");
-                LoginDetails();
-            }
-        });
+
+        // Set font style for buttons
         lookCatalogButton.setFont(new Font("Arial", Font.BOLD, 14));
-        searchBookButton.setFont(new Font("Arial", Font.BOLD, 14));
-        returnBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         borrowBookButton.setFont(new Font("Arial", Font.BOLD, 14));
+        returnBookButton.setFont(new Font("Arial", Font.BOLD, 14));
+        searchBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         returnHomeButton.setFont(new Font("Arial", Font.BOLD, 14));
 
+        // Add action listeners for each button
+        lookCatalogButton.addActionListener(e -> displayBookCollection(0));
+        borrowBookButton.addActionListener(e -> borrowBook(1));
+        returnBookButton.addActionListener(e -> returnBook(1));
+        searchBookButton.addActionListener(e -> searchBook(0));
+        returnHomeButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Logged out successfully");
+            LoginDetails();
+        });
+
+        // Add buttons to the menu panel
         menuPanel.add(lookCatalogButton);
         menuPanel.add(borrowBookButton);
         menuPanel.add(returnBookButton);
         menuPanel.add(searchBookButton);
         menuPanel.add(returnHomeButton);
+
+        // Clear previous content from frame and add the menu panel
         frame.getContentPane().removeAll();
         frame.add(menuPanel, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
     }
-
     public static void createUser(int x) {
         JPanel userInfoPanel = new JPanel(new GridLayout(3, 2));
 
@@ -209,7 +218,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void login() {
         JPanel loginPanel = new JPanel(new GridLayout(2, 2));
 
@@ -248,7 +256,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void Authenticate() {
         JPanel AdminLoginPanel = new JPanel(new GridLayout(2, 2));
         JLabel idLabel = new JLabel("Password: ");
@@ -262,8 +269,8 @@ public class Main {
                 String idText = passwordField.getText();
 
                 try {
-                    userPass = Integer.parseInt(idText);
-                    if (userPass == 2005) {
+                    librarianPass = Integer.parseInt(idText);
+                    if (librarianPass == 2005) {
                         JOptionPane.showMessageDialog(frame, "Logged in successfully");
                         adminView();
                     } else {
@@ -285,7 +292,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void adminView() {
         JPanel NewMenuPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         JButton addBookButton = new JButton("Add Book");
@@ -380,7 +386,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void displayBookCollection(int x) {
         JPanel bookcatalog = new JPanel();
         DefaultTableModel tableModel = new DefaultTableModel() {
@@ -425,7 +430,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void removeUser() {
         JPanel removeUserPanel = new JPanel(new GridLayout(3, 1));
         JLabel idLabel = new JLabel("ID:");
@@ -450,7 +454,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void addBook() {
         JPanel addBookPanel = new JPanel(new GridLayout(4, 1));
 
@@ -487,7 +490,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void removeBook() {
         JPanel removeBookPanel = new JPanel(new GridLayout(2, 1));
 
@@ -499,7 +501,6 @@ public class Main {
             int x = Integer.parseInt(idField.getText());
             if (Library1.removeBook(x) == 1) {
                 JOptionPane.showMessageDialog(frame, "Removed Book Successfully!");
-                updateArrayToJsonFile(Users);
                 adminView();
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed!");
@@ -517,7 +518,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void searchBook(int x) {
         JCheckBox authorCheckbox = new JCheckBox("Search by Author");
         JCheckBox titleCheckbox = new JCheckBox("Search by Title");
@@ -634,7 +634,6 @@ public class Main {
 
         }
     }
-
     public static void returnBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
@@ -647,6 +646,25 @@ public class Main {
             int bid = Integer.parseInt(bookIdField.getText());
             int uid = Integer.parseInt(userIdField.getText());
             int returnStatus = Library1.returnBook(bid, uid);
+//            for(User i:Users){
+//                if(i.GetUserID()==uid){
+//                    List<Book> temp = i.RetrieveBorrowedBooks();
+//                    for(Book j: temp){
+//                        if(j.GetBookID()==bid){
+//                            temp.remove(j);
+//                            i.ModifyBorrowedBooks(temp);
+//                            j.ChangeAvailability('y');
+//                            for(Book l:Books){
+//                                if(l.GetBookID()==bid){
+//                                    l.ChangeAvailability('y');
+//                                }
+//                            }
+//                            returnStatus=1;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
             if (returnStatus == 1) {
                 JOptionPane.showMessageDialog(frame, "Returned Book Successfully!");
 
@@ -672,7 +690,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void borrowBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
@@ -708,7 +725,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void saveData(List<User> users, List<Book> books) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -724,8 +740,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    // Load data from JSON files and append to array lists, also count the number of objects loaded
     public static void loadData(List<User> users, List<Book> books) {
         Gson gson = new Gson();
         try (Reader reader = new FileReader(USERS_JSON_FILE)) {
@@ -752,16 +766,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    public static void updateArrayToJsonFile(List<User> users) {
-        try (Writer writer = new FileWriter("users.json")) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(Users, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void forgotID() {
         JPanel forgotID = new JPanel();
         JLabel nameLabel = new JLabel("Name:");
@@ -777,18 +781,28 @@ public class Main {
                 String name = nameField.getText();
 
                 String contactInfo = contactField.getText();
-                try {
-                    validateTextField(contactInfo, "Contact Info");
-                } catch (IllegalArgumentException f) {
-                    JOptionPane.showMessageDialog(frame, "Error: " + f.getMessage());
-                }
-                int temp = Library1.forgotID(name, contactInfo);
-                if (temp != 0) {
-                    // Show message dialog with the entered information
-                    JOptionPane.showMessageDialog(frame,
-                            "Name: " + name + "\n" + "Contact Information: " + contactInfo + "User ID: " + temp);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Error Finding ID!");
+                int temp = 0;
+
+                while (true) {
+                    try {
+                        validateTextField(contactInfo, "Contact Info");
+                        temp = Library1.forgotID(name, contactInfo);
+                        if (temp != 0) {
+                            // Show message dialog with the entered information
+                            JOptionPane.showMessageDialog(frame,
+                                    "Name: " + name + "\n" + "Contact Information: " + contactInfo + "\nUser ID: " + temp);
+                            break; // Break the loop if input is valid and ID is found
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Error Finding ID!");
+                            break; // Break the loop if ID is not found
+                        }
+                    } catch (IllegalArgumentException f) {
+                        // Show error message
+                        JOptionPane.showMessageDialog(frame, "Error: " + f.getMessage());
+                        // Prompt user to enter correct input again
+                        name = JOptionPane.showInputDialog(frame, "Enter Name:");
+                        contactInfo = JOptionPane.showInputDialog(frame, "Enter Contact Info:");
+                    }
                 }
                 LoginDetails();
             }
@@ -806,7 +820,6 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-
     public static void validateTextField(String text, String fieldName) {
         if (text == null || text.trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, fieldName + " cannot be empty!");
