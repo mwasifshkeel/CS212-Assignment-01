@@ -45,7 +45,7 @@ public class User{
         Iterator<Book> iterator = BorrowedBooks.iterator();
         while (iterator.hasNext()) {
             Book bookBorrowed = iterator.next();
-            if (bookBorrowed == book) {
+            if (bookBorrowed.equals(book)) {
                 iterator.remove();
                 NumBooks--;
                 success = 1;
@@ -57,7 +57,7 @@ public class User{
     public String ShowBookCollection(){
         String message = "";
         for(Book i:BorrowedBooks){
-            message = i.GetTitle() + "\n" +  i.GetBookID() + "\n" + i.GetAuthor() + "\n" + i.GetGenre() + "\n" +i.GetAvailability() + "\n";
+            message += i.GetTitle() + "\n" +  i.GetBookID() + "\n" + i.GetAuthor() + "\n" + i.GetGenre() + "\n" +i.GetAvailability() + "\n";
         }
         return message;
     }

@@ -28,8 +28,8 @@ public class Main {
     private static int userId;
     private static int userPass;
 
-    public static void main(String[] args){
-        loadData(Users,Books);
+    public static void main(String[] args) {
+        loadData(Users, Books);
         WelcomeMenu();
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -38,7 +38,8 @@ public class Main {
             }
         });
     }
-    public static void WelcomeMenu(){
+
+    public static void WelcomeMenu() {
         JButton continueButton;
         frame.setLayout(new BorderLayout());
 
@@ -61,7 +62,8 @@ public class Main {
         frame.setLocationRelativeTo(null); // Center the frame on screen
         frame.setVisible(true);
     }
-    public static void LoginDetails(){
+
+    public static void LoginDetails() {
         JPanel userPanel = new JPanel(new GridLayout(4, 1));
 
         JButton createUserButton = new JButton("Create New User");
@@ -89,12 +91,13 @@ public class Main {
         });
 
         JButton forgotIDButton = new JButton("Forgot ID?");
-//        adminButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                Authenticate();
-//            }
-//        });
+        forgotIDButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Action to create new user goes here
+                forgotID();
+            }
+        });
 
         userPanel.add(createUserButton);
         userPanel.add(loginButton);
@@ -112,14 +115,15 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void Menu(){
+
+    public static void Menu() {
         JPanel menuPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         JButton lookCatalogButton = new JButton("Book Collection");
         lookCatalogButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Action to create new user goes here
-                displayBookCollection();
+                displayBookCollection(0);
             }
         });
         JButton borrowBookButton = new JButton("Borrow Book");
@@ -134,7 +138,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Action to create new user goes here
-                searchBook();
+                searchBook(0);
             }
         });
         JButton returnBookButton = new JButton("Return Book");
@@ -145,20 +149,32 @@ public class Main {
                 returnBook(1);
             }
         });
+        JButton returnHomeButton = new JButton("Log Out");
+        returnHomeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(frame, "Logged out successfully");
+                LoginDetails();
+            }
+        });
         lookCatalogButton.setFont(new Font("Arial", Font.BOLD, 14));
         searchBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         returnBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         borrowBookButton.setFont(new Font("Arial", Font.BOLD, 14));
+        returnHomeButton.setFont(new Font("Arial", Font.BOLD, 14));
+
         menuPanel.add(lookCatalogButton);
         menuPanel.add(borrowBookButton);
         menuPanel.add(returnBookButton);
         menuPanel.add(searchBookButton);
+        menuPanel.add(returnHomeButton);
         frame.getContentPane().removeAll();
         frame.add(menuPanel, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
     }
-    public static void createUser(int x){
+
+    public static void createUser(int x) {
         JPanel userInfoPanel = new JPanel(new GridLayout(3, 2));
 
         JLabel nameLabel = new JLabel("Name:");
@@ -171,13 +187,13 @@ public class Main {
             // Retrieve the entered name and contact information
             String name = nameField.getText();
             String contactInfo = contactField.getText();
-            User temp = new User(name,contactInfo);
+            User temp = new User(name, contactInfo);
             Library1.addUser(temp);
             String message = "User created successfully! Note Down ID: " + temp.GetUserID();
-            JOptionPane.showMessageDialog(frame, message );
-            if(x==0) {
+            JOptionPane.showMessageDialog(frame, message);
+            if (x == 0) {
                 LoginDetails();
-            }else{
+            } else {
                 adminView();
             }
         });
@@ -193,7 +209,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void login(){
+
+    public static void login() {
         JPanel loginPanel = new JPanel(new GridLayout(2, 2));
 
         JLabel idLabel = new JLabel("User ID:");
@@ -209,10 +226,10 @@ public class Main {
                 // Validate if the entered ID is an integer
                 try {
                     userId = Integer.parseInt(idText);
-                    if(Library1.findUser(userId)==0){
+                    if (Library1.findUser(userId) == 0) {
                         JOptionPane.showMessageDialog(frame, "Logged in successfully with ID: " + userId);
                         Menu();
-                    }else{
+                    } else {
                         JOptionPane.showMessageDialog(frame, "No Such ID Exists!");
                         LoginDetails();
                     }
@@ -231,7 +248,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void Authenticate(){
+
+    public static void Authenticate() {
         JPanel AdminLoginPanel = new JPanel(new GridLayout(2, 2));
         JLabel idLabel = new JLabel("Password: ");
         JPasswordField passwordField = new JPasswordField();
@@ -245,10 +263,10 @@ public class Main {
 
                 try {
                     userPass = Integer.parseInt(idText);
-                    if(userPass==2005){
+                    if (userPass == 2005) {
                         JOptionPane.showMessageDialog(frame, "Logged in successfully");
                         adminView();
-                    }else{
+                    } else {
                         JOptionPane.showMessageDialog(frame, "Wrong Password");
                         LoginDetails();
                     }
@@ -267,7 +285,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void adminView(){
+
+    public static void adminView() {
         JPanel NewMenuPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         JButton addBookButton = new JButton("Add Book");
         addBookButton.addActionListener(new ActionListener() {
@@ -301,7 +320,7 @@ public class Main {
         lookCatalogButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayBookCollection();
+                displayBookCollection(1);
             }
         });
         JButton borrowBookButton = new JButton("Borrow Book");
@@ -316,7 +335,7 @@ public class Main {
         searchBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                searchBook();
+                searchBook(1);
             }
         });
         JButton returnBookButton = new JButton("Return Book");
@@ -324,6 +343,14 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 returnBook(0);
+            }
+        });
+        JButton returnHomeButton = new JButton("Log Out");
+        returnHomeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(frame, "Logged out successfully");
+                LoginDetails();
             }
         });
 
@@ -335,6 +362,8 @@ public class Main {
         addBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         removeBookButton.setFont(new Font("Arial", Font.BOLD, 14));
         removeUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+        returnHomeButton.setFont(new Font("Arial", Font.BOLD, 14));
+
         NewMenuPanel.add(borrowBookButton);
         NewMenuPanel.add(lookCatalogButton);
         NewMenuPanel.add(searchBookButton);
@@ -343,14 +372,16 @@ public class Main {
         NewMenuPanel.add(removeUserButton);
         NewMenuPanel.add(addBookButton);
         NewMenuPanel.add(removeBookButton);
+        NewMenuPanel.add(returnHomeButton);
 
         frame.getContentPane().removeAll();
         frame.add(NewMenuPanel, BorderLayout.CENTER);
-        frame.setSize(500,500);
+        frame.setSize(500, 500);
         frame.revalidate();
         frame.repaint();
     }
-    public static void displayBookCollection() {
+
+    public static void displayBookCollection(int x) {
         JPanel bookcatalog = new JPanel();
         DefaultTableModel tableModel = new DefaultTableModel() {
             @Override
@@ -376,24 +407,37 @@ public class Main {
         JScrollPane scrollPane = new JScrollPane(table);
         bookcatalog.setLayout(new BorderLayout());
         bookcatalog.add(scrollPane, BorderLayout.CENTER);
+        JButton returnButton = new JButton("Go Back");
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (x == 0) {
+                    Menu();
+                } else {
+                    adminView();
+                }
+            }
+        });
+        bookcatalog.add(returnButton, BorderLayout.SOUTH);
 
         frame.getContentPane().removeAll();
         frame.add(bookcatalog, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
     }
-    public static void removeUser(){
-        JPanel removeUserPanel = new JPanel(new GridLayout(3,1));
+
+    public static void removeUser() {
+        JPanel removeUserPanel = new JPanel(new GridLayout(3, 1));
         JLabel idLabel = new JLabel("ID:");
         JTextField idField = new JTextField();
         JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(e -> {
             // Retrieve the entered name and contact information
             int id = Integer.parseInt(idField.getText());
-            if(Library1.removeUser(id)==1){
+            if (Library1.removeUser(id) == 1) {
                 JOptionPane.showMessageDialog(frame, "Removed User Successfully!");
                 adminView();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(frame, "Failed");
                 adminView();
             }
@@ -406,7 +450,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void addBook(){
+
+    public static void addBook() {
         JPanel addBookPanel = new JPanel(new GridLayout(4, 1));
 
         JLabel nameLabel = new JLabel("Title:");
@@ -422,10 +467,10 @@ public class Main {
             String name = nameField.getText();
             String author = authorField.getText();
             String genre = genreField.getText();
-            Book temp = new Book(name,author,genre);
+            Book temp = new Book(name, author, genre);
             Library1.addBook(temp);
             String message = "Book added successfully!";
-            JOptionPane.showMessageDialog(frame, message );
+            JOptionPane.showMessageDialog(frame, message);
             adminView();
         });
 
@@ -442,7 +487,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void removeBook(){
+
+    public static void removeBook() {
         JPanel removeBookPanel = new JPanel(new GridLayout(2, 1));
 
         JLabel idLabel = new JLabel("Book ID:");
@@ -451,10 +497,11 @@ public class Main {
         JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(e -> {
             int x = Integer.parseInt(idField.getText());
-            if(Library1.removeBook(x)==1) {
+            if (Library1.removeBook(x) == 1) {
                 JOptionPane.showMessageDialog(frame, "Removed Book Successfully!");
+                updateArrayToJsonFile(Users);
                 adminView();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(frame, "Failed!");
                 adminView();
             }
@@ -470,7 +517,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void searchBook() {
+
+    public static void searchBook(int x) {
         JCheckBox authorCheckbox = new JCheckBox("Search by Author");
         JCheckBox titleCheckbox = new JCheckBox("Search by Title");
         JCheckBox idCheckbox = new JCheckBox("Search by User ID");
@@ -498,12 +546,28 @@ public class Main {
                 int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter Author Name", JOptionPane.OK_CANCEL_OPTION);
                 if (inputOption == JOptionPane.OK_OPTION) {
                     String authorInput = authorField.getText();
-                    if (!Library1.SearchBookByAuthor(authorInput).isEmpty()) {
-                        JOptionPane.showMessageDialog(null, Library1.SearchBookByAuthor(authorInput));
+                    String userData = Library1.SearchBookByAuthor(authorInput);
+                    if (!userData.isEmpty()) {
+                        // Display data in tabular form
+                        String[] columnNames = {"Title", "BookID", "Author", "Genre", "Available"};
+                        String[] rowData = userData.split("\n");
+                        Object[][] tableData = new Object[rowData.length / 5][columnNames.length];
+
+                        for (int i = 0; i < rowData.length / 5; i++) {
+                            for (int j = 0; j < columnNames.length; j++) {
+                                tableData[i][j] = rowData[(i * 5) + j];
+                            }
+                        }
+                        JTable table = new JTable(tableData, columnNames);
+                        JOptionPane.showMessageDialog(null, new JScrollPane(table), "Books", JOptionPane.PLAIN_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(null, "No books found by this author!");
+                        JOptionPane.showMessageDialog(null, "No books found with this user ID!");
                     }
-                    adminView();
+                    if (x == 1) {
+                        adminView();
+                    } else {
+                        Menu();
+                    }
                 }
             }
             if (titleCheckbox.isSelected()) {
@@ -523,7 +587,11 @@ public class Main {
                     } else {
                         JOptionPane.showMessageDialog(null, "No books found with this title!");
                     }
-                    adminView();
+                    if (x == 1) {
+                        adminView();
+                    } else {
+                        Menu();
+                    }
                 }
             }
             if (idCheckbox.isSelected()) {
@@ -543,26 +611,31 @@ public class Main {
                         // Display data in tabular form
                         String[] columnNames = {"Title", "BookID", "Author", "Genre", "Available"};
                         String[] rowData = userData.split("\n");
-                        Object[][] tableData = new Object[rowData.length][columnNames.length];
+                        Object[][] tableData = new Object[rowData.length / 5][columnNames.length];
 
-
-                            for (int j = 0; j < columnNames.length && j < rowData.length; j++) {
-                                tableData[0][j] = rowData[j];
+                        for (int i = 0; i < rowData.length / 5; i++) {
+                            for (int j = 0; j < columnNames.length; j++) {
+                                tableData[i][j] = rowData[(i * 5) + j];
                             }
-
+                        }
                         JTable table = new JTable(tableData, columnNames);
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Books", JOptionPane.PLAIN_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(null, "No books found with this user ID!");
                     }
-                    adminView();
+                    if (x == 1) {
+                        adminView();
+                    } else {
+                        Menu();
+                    }
                 }
 
             }
 
         }
     }
-    public static void returnBook(int x){
+
+    public static void returnBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
         JTextField bookIdField = new JTextField(10);
@@ -573,14 +646,16 @@ public class Main {
             // Retrieve the entered name and contact information
             int bid = Integer.parseInt(bookIdField.getText());
             int uid = Integer.parseInt(userIdField.getText());
-            if(Library1.returnBook(bid,uid)==1){
+            int returnStatus = Library1.returnBook(bid, uid);
+            if (returnStatus == 1) {
                 JOptionPane.showMessageDialog(frame, "Returned Book Successfully!");
-            }else{
+
+            } else {
                 JOptionPane.showMessageDialog(frame, "Return Failed!");
             }
-            if(x==0){
+            if (x == 0) {
                 adminView();
-            }else{
+            } else {
                 Menu();
             }
         });
@@ -597,7 +672,8 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
-    public static void borrowBook(int x){
+
+    public static void borrowBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
         JTextField bookIdField = new JTextField(10);
@@ -608,14 +684,14 @@ public class Main {
             // Retrieve the entered name and contact information
             int bid = Integer.parseInt(bookIdField.getText());
             int uid = Integer.parseInt(userIdField.getText());
-            if(Library1.checkOut(bid,uid)==1){
+            if (Library1.checkOut(bid, uid) == 1) {
                 JOptionPane.showMessageDialog(frame, "Checked Book Successfully!");
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(frame, "Check out failed!");
             }
-            if(x==0){
+            if (x == 0) {
                 adminView();
-            }else{
+            } else {
                 Menu();
             }
         });
@@ -648,29 +724,100 @@ public class Main {
             e.printStackTrace();
         }
     }
+
     // Load data from JSON files and append to array lists, also count the number of objects loaded
     public static void loadData(List<User> users, List<Book> books) {
         Gson gson = new Gson();
         try (Reader reader = new FileReader(USERS_JSON_FILE)) {
-            Type userListType = new TypeToken<ArrayList<User>>() {}.getType();
+            Type userListType = new TypeToken<ArrayList<User>>() {
+            }.getType();
             ArrayList<User> loadedUsers = gson.fromJson(reader, userListType);
             if (loadedUsers != null) {
                 users.addAll(loadedUsers);
-                nu = loadedUsers.size()+1;
+                nu = loadedUsers.size() + 1;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         try (Reader reader = new FileReader(BOOKS_JSON_FILE)) {
-            Type bookListType = new TypeToken<ArrayList<Book>>() {}.getType();
+            Type bookListType = new TypeToken<ArrayList<Book>>() {
+            }.getType();
             ArrayList<Book> loadedBooks = gson.fromJson(reader, bookListType);
             if (loadedBooks != null) {
                 books.addAll(loadedBooks);
-                bu = loadedBooks.size()+1;
+                bu = loadedBooks.size() + 1;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void updateArrayToJsonFile(List<User> users) {
+        try (Writer writer = new FileWriter("users.json")) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(Users, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void forgotID() {
+        JPanel forgotID = new JPanel();
+        JLabel nameLabel = new JLabel("Name:");
+        JLabel contactLabel = new JLabel("Contact Information:");
+        JTextField nameField = new JTextField(20);
+        JTextField contactField = new JTextField(20);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String name = nameField.getText();
+
+                String contactInfo = contactField.getText();
+                try {
+                    validateTextField(contactInfo, "Contact Info");
+                } catch (IllegalArgumentException f) {
+                    JOptionPane.showMessageDialog(frame, "Error: " + f.getMessage());
+                }
+                int temp = Library1.forgotID(name, contactInfo);
+                if (temp != 0) {
+                    // Show message dialog with the entered information
+                    JOptionPane.showMessageDialog(frame,
+                            "Name: " + name + "\n" + "Contact Information: " + contactInfo + "User ID: " + temp);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Error Finding ID!");
+                }
+                LoginDetails();
+            }
+        });
+
+        // Add components to the panel
+        forgotID.add(nameLabel);
+        forgotID.add(nameField);
+        forgotID.add(contactLabel);
+        forgotID.add(contactField);
+        forgotID.add(submitButton);
+
+        frame.getContentPane().removeAll();
+        frame.add(forgotID, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    public static void validateTextField(String text, String fieldName) {
+        if (text == null || text.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(frame, fieldName + " cannot be empty!");
+            return; // Return from the method if text is empty
+        }
+
+        // Perform type checking
+        if (!text.matches("[a-zA-Z]+")) {
+            JOptionPane.showMessageDialog(frame, fieldName + " must contain only alphabets!");
+        }
+
+        // You can add more type checking rules here as needed
     }
 }

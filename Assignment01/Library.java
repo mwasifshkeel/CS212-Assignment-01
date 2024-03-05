@@ -77,6 +77,7 @@ public class Library {
         for(Book i:Books){
             if(i.GetTitle().equals(title)){
                 message += "Title: " + i.GetTitle() + "\n" + "BookID: "+ i.GetBookID() + "\n" + "Author: " +i.GetAuthor() + "\n" + "Genre: " + i.GetGenre() + "\n" + "Available: " + i.GetAvailability() + "\n";
+                break;
             }
         }
         return message;
@@ -114,5 +115,14 @@ public class Library {
             }
         }
         return x;
+    }
+    public int forgotID(String name, String cinfo){
+        int y= 0;
+        for(User i : Users){
+            if(i.GetName().equals(name)&&i.GetContactInfo().equals(cinfo)){
+                return i.GetUserID();
+            }
+        }
+        return 0;
     }
 }
