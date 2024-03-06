@@ -124,27 +124,47 @@ public class Library {
         return message;
     }
     //Removes User from ArrayList Users
-    public int removeUser(int userID){
+    public int removeUser(int userID) {
         int finish = 0;
         Iterator<User> iterator = Users.iterator();
         while (iterator.hasNext()) {
-            User user = iterator.next();
-            if (user.GetUserID() == userID) {
-                iterator.remove();
+            User i = iterator.next();
+            if (i.GetUserID() == userID) {
+                List<Book> temp = i.RetrieveBorrowedBooks();
+                for (Book u : temp) {
+                    for(Book p:Books){
+                        if(u.GetBookID()==p.GetBookID()){
+                            p.ChangeAvailability('y');
+                        }
+                    }
+                }
+                iterator.remove(); // Use iterator's remove method to avoid ConcurrentModificationException
                 finish = 1;
             }
         }
         return finish;
     }
+
     //Removes Book from ArrayList Books
-    public int removeBook(int BookID){
+    public int removeBook(int BookID) {
         int finish = 0;
-        Iterator<Book> iterator = Books.iterator();
-        while (iterator.hasNext()) {
-            Book book = iterator.next();
-            if (book.GetBookID() == BookID) {
-                iterator.remove();
+        for (Book i : Books) {
+            if (i.GetBookID() == BookID) {
+                for (User j : Users) {
+                    List<Book> temp = j.RetrieveBorrowedBooks();
+                    Iterator<Book> iterator = temp.iterator();
+                    while (iterator.hasNext()) {
+                        Book k = iterator.next();
+                        if (i.GetBookID() == k.GetBookID()) {
+                            iterator.remove();
+                            j.ModifyBorrowedBooks(temp);
+                            break;
+                        }
+                    }
+                }
+                Books.remove(i);
                 finish = 1;
+                break; // Exit the loop after removing the book
             }
         }
         return finish;

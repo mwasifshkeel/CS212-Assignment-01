@@ -126,8 +126,8 @@ public class Main {
         //Append all items to the panel
         userPanel.add(createUserButton);
         userPanel.add(loginButton);
-        userPanel.add(adminButton);
         userPanel.add(forgotIDButton);
+        userPanel.add(adminButton);
 
         // Center align text and buttons
         createUserButton.setHorizontalAlignment(SwingConstants.CENTER);
@@ -196,14 +196,37 @@ public class Main {
             // Retrieve the entered name and contact information
             String name = nameField.getText();
             String contactInfo = contactField.getText();
-            User temp = new User(name, contactInfo);
-            Library1.addUser(temp);
-            String message = "User created successfully! Note Down ID: " + temp.GetUserID();
-            JOptionPane.showMessageDialog(frame, message);
-            if (x == 0) {
-                LoginDetails();
-            } else {
-                adminView();
+
+            try {
+                // Validate the text fields
+                validateTextField(name, "Name");
+                validateContactInfo(contactInfo);
+
+                // Create and add user
+                User temp = new User(name, contactInfo);
+                Library1.addUser(temp);
+                String message = "User created successfully! Note Down ID: " + temp.GetUserID();
+                JOptionPane.showMessageDialog(frame, message);
+                if (x == 0) {
+                    LoginDetails();
+                } else {
+                    adminView();
+                }
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors by displaying an error message
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+            }
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                if (x == 0) {
+                    LoginDetails();
+                } else {
+                    adminView();
+                }
             }
         });
 
@@ -213,6 +236,7 @@ public class Main {
         userInfoPanel.add(contactLabel);
         userInfoPanel.add(contactField);
         userInfoPanel.add(submitButton);
+        userInfoPanel.add(ReturnBackButton);
         frame.getContentPane().removeAll();
         frame.add(userInfoPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -246,11 +270,19 @@ public class Main {
                 }
             }
         });
-
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                LoginDetails();
+            }
+        });
         // Add components to the panel
         loginPanel.add(idLabel);
         loginPanel.add(idField);
         loginPanel.add(loginButton);
+        loginPanel.add(ReturnBackButton);
         frame.getContentPane().removeAll();
         frame.add(loginPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -278,8 +310,16 @@ public class Main {
                         LoginDetails();
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid integer ID.");
+                    JOptionPane.showMessageDialog(frame, "Incorrect Password! Try Again.");
                 }
+            }
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                LoginDetails();
             }
         });
 
@@ -287,6 +327,7 @@ public class Main {
         AdminLoginPanel.add(idLabel);
         AdminLoginPanel.add(passwordField);
         AdminLoginPanel.add(loginButton);
+        AdminLoginPanel.add(ReturnBackButton);
         frame.getContentPane().removeAll();
         frame.add(AdminLoginPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -380,9 +421,11 @@ public class Main {
         NewMenuPanel.add(removeBookButton);
         NewMenuPanel.add(returnHomeButton);
 
+        NewMenuPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.getContentPane().removeAll();
         frame.add(NewMenuPanel, BorderLayout.CENTER);
         frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
         frame.revalidate();
         frame.repaint();
     }
@@ -436,19 +479,37 @@ public class Main {
         JTextField idField = new JTextField();
         JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(e -> {
-            // Retrieve the entered name and contact information
-            int id = Integer.parseInt(idField.getText());
-            if (Library1.removeUser(id) == 1) {
-                JOptionPane.showMessageDialog(frame, "Removed User Successfully!");
+            // Retrieve the entered ID
+            String idText = idField.getText();
+            try {
+                // Validate the ID
+                validateID(idText, "User ID");
+
+                // If validation passes, parse the ID and remove user
+                int id = Integer.parseInt(idText);
+                if (Library1.removeUser(id) == 1) {
+                    JOptionPane.showMessageDialog(frame, "Removed User Successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed");
+                }
                 adminView();
-            } else {
-                JOptionPane.showMessageDialog(frame, "Failed");
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors by displaying an error message
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+            }
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
                 adminView();
             }
         });
         removeUserPanel.add(idLabel);
         removeUserPanel.add(idField);
         removeUserPanel.add(removeButton);
+        removeUserPanel.add(ReturnBackButton);
         frame.getContentPane().removeAll();
         frame.add(removeUserPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -470,13 +531,31 @@ public class Main {
             String name = nameField.getText();
             String author = authorField.getText();
             String genre = genreField.getText();
-            Book temp = new Book(name, author, genre);
-            Library1.addBook(temp);
-            String message = "Book added successfully!";
-            JOptionPane.showMessageDialog(frame, message);
-            adminView();
-        });
 
+            try {
+                // Validate the text fields
+                validateTextField(name, "Title");
+                validateTextField(author, "Author");
+                validateTextField(genre, "Genre");
+
+                // Create and add book
+                Book temp = new Book(name, author, genre);
+                Library1.addBook(temp);
+                JOptionPane.showMessageDialog(frame, "Book added successfully!");
+                adminView();
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors by displaying an error message
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+            }
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                adminView();
+            }
+        });
         // Add components to the panel
         addBookPanel.add(nameLabel);
         addBookPanel.add(nameField);
@@ -485,6 +564,7 @@ public class Main {
         addBookPanel.add(genreLabel);
         addBookPanel.add(genreField);
         addBookPanel.add(submitButton);
+        addBookPanel.add(ReturnBackButton);
         frame.getContentPane().removeAll();
         frame.add(addBookPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -498,12 +578,35 @@ public class Main {
 
         JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(e -> {
-            int x = Integer.parseInt(idField.getText());
-            if (Library1.removeBook(x) == 1) {
-                JOptionPane.showMessageDialog(frame, "Removed Book Successfully!");
+            try {
+                // Retrieve the entered book ID
+                String id = idField.getText();
+
+                // Validate the book ID
+                validateID(id, "Book ID");
+
+                // Convert the ID to integer
+                int x = Integer.parseInt(id);
+
+                // Remove the book
+                if (Library1.removeBook(x) == 1) {
+                    JOptionPane.showMessageDialog(frame, "Removed Book Successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to remove book!");
+                }
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+            } finally {
+                // Navigate back to admin view
                 adminView();
-            } else {
-                JOptionPane.showMessageDialog(frame, "Failed!");
+            }
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
                 adminView();
             }
         });
@@ -512,6 +615,7 @@ public class Main {
         removeBookPanel.add(idLabel);
         removeBookPanel.add(idField);
         removeBookPanel.add(removeButton);
+        removeBookPanel.add(ReturnBackButton);
 
         frame.getContentPane().removeAll();
         frame.add(removeBookPanel, BorderLayout.CENTER);
@@ -534,18 +638,14 @@ public class Main {
 
         // Check if "OK" was clicked and process user's choice
         if (option == JOptionPane.OK_OPTION) {
-            if (authorCheckbox.isSelected()) {
-                // Create a new panel to hold text fields for author input
-                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
-                JLabel authorLabel = new JLabel("Author:");
-                JTextField authorField = new JTextField();
-                inputPanel.add(authorLabel);
-                inputPanel.add(authorField);
+            if (authorCheckbox.isSelected() && !titleCheckbox.isSelected() && !idCheckbox.isSelected()) {
+                // Search by author selected
+                try {
+                    // Validate author input
+                    String authorInput = JOptionPane.showInputDialog("Enter Author Name:");
+                    validateTextField(authorInput, "Author Name");
 
-                // Show the input panel in a dialog
-                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter Author Name", JOptionPane.OK_CANCEL_OPTION);
-                if (inputOption == JOptionPane.OK_OPTION) {
-                    String authorInput = authorField.getText();
+                    // Perform search and display results
                     String userData = Library1.SearchBookByAuthor(authorInput);
                     if (!userData.isEmpty()) {
                         // Display data in tabular form
@@ -561,52 +661,40 @@ public class Main {
                         JTable table = new JTable(tableData, columnNames);
                         JOptionPane.showMessageDialog(null, new JScrollPane(table), "Books", JOptionPane.PLAIN_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(null, "No books found with this user ID!");
+                        JOptionPane.showMessageDialog(null, "No books found with this author name!");
                     }
-                    if (x == 1) {
-                        adminView();
-                    } else {
-                        Menu();
-                    }
+                } catch (IllegalArgumentException ex) {
+                    // Handle validation errors
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
-            }
-            if (titleCheckbox.isSelected()) {
-                // Create a new panel to hold text fields for title input
-                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
-                JLabel titleLabel = new JLabel("Title:");
-                JTextField titleField = new JTextField();
-                inputPanel.add(titleLabel);
-                inputPanel.add(titleField);
+            } else if (titleCheckbox.isSelected() && !authorCheckbox.isSelected() && !idCheckbox.isSelected()) {
+                // Search by title selected
+                try {
+                    // Validate title input
+                    String titleInput = JOptionPane.showInputDialog("Enter Title:");
+                    validateTextField(titleInput, "Title");
 
-                // Show the input panel in a dialog
-                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter Title", JOptionPane.OK_CANCEL_OPTION);
-                if (inputOption == JOptionPane.OK_OPTION) {
-                    String titleInput = titleField.getText();
-                    if (!Library1.SearchBookByTitle(titleInput).isEmpty()) {
-                        JOptionPane.showMessageDialog(null, Library1.SearchBookByTitle(titleInput));
+                    // Perform search and display results
+                    String userData = Library1.SearchBookByTitle(titleInput);
+                    if (!userData.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, userData);
                     } else {
                         JOptionPane.showMessageDialog(null, "No books found with this title!");
                     }
-                    if (x == 1) {
-                        adminView();
-                    } else {
-                        Menu();
-                    }
+                } catch (IllegalArgumentException ex) {
+                    // Handle validation errors
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
-            }
-            if (idCheckbox.isSelected()) {
-                // Create a new panel to hold text fields for ID input
-                JPanel inputPanel = new JPanel(new GridLayout(0, 2));
-                JLabel idLabel = new JLabel("ID:");
-                JTextField idField = new JTextField();
-                inputPanel.add(idLabel);
-                inputPanel.add(idField);
+            } else if (idCheckbox.isSelected() && !authorCheckbox.isSelected() && !titleCheckbox.isSelected()) {
+                // Search by user ID selected
+                try {
+                    // Validate user ID input
+                    String idInput = JOptionPane.showInputDialog("Enter User ID:");
+                    validateID(idInput, "User ID");
 
-                // Show the input panel in a dialog
-                int inputOption = JOptionPane.showConfirmDialog(null, inputPanel, "Enter User ID", JOptionPane.OK_CANCEL_OPTION);
-                if (inputOption == JOptionPane.OK_OPTION) {
-                    int idInput = Integer.parseInt(idField.getText());
-                    String userData = Library1.SearchBookByUserID(idInput);
+                    // Perform search and display results
+                    int uid = Integer.parseInt(idInput);
+                    String userData = Library1.SearchBookByUserID(uid);
                     if (!userData.isEmpty()) {
                         // Display data in tabular form
                         String[] columnNames = {"Title", "BookID", "Author", "Genre", "Available"};
@@ -623,15 +711,23 @@ public class Main {
                     } else {
                         JOptionPane.showMessageDialog(null, "No books found with this user ID!");
                     }
-                    if (x == 1) {
-                        adminView();
-                    } else {
-                        Menu();
-                    }
+                } catch (NumberFormatException ex) {
+                    // Handle invalid user ID input
+                    JOptionPane.showMessageDialog(null, "Invalid User ID! Please enter a numerical value.");
+                } catch (IllegalArgumentException ex) {
+                    // Handle validation errors
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
-
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select only one search option!");
             }
 
+            // Navigate back to appropriate view
+            if (x == 1) {
+                adminView();
+            } else {
+                Menu();
+            }
         }
     }
     public static void returnBook(int x) {
@@ -642,41 +738,48 @@ public class Main {
         JTextField userIdField = new JTextField(10);
         JButton returnButton = new JButton("Return");
         returnButton.addActionListener(e -> {
-            // Retrieve the entered name and contact information
-            int bid = Integer.parseInt(bookIdField.getText());
-            int uid = Integer.parseInt(userIdField.getText());
-            int returnStatus = Library1.returnBook(bid, uid);
-//            for(User i:Users){
-//                if(i.GetUserID()==uid){
-//                    List<Book> temp = i.RetrieveBorrowedBooks();
-//                    for(Book j: temp){
-//                        if(j.GetBookID()==bid){
-//                            temp.remove(j);
-//                            i.ModifyBorrowedBooks(temp);
-//                            j.ChangeAvailability('y');
-//                            for(Book l:Books){
-//                                if(l.GetBookID()==bid){
-//                                    l.ChangeAvailability('y');
-//                                }
-//                            }
-//                            returnStatus=1;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-            if (returnStatus == 1) {
-                JOptionPane.showMessageDialog(frame, "Returned Book Successfully!");
+            try {
+                // Retrieve the entered book ID and user ID
+                String bookId = bookIdField.getText();
+                String userId = userIdField.getText();
 
-            } else {
-                JOptionPane.showMessageDialog(frame, "Return Failed!");
-            }
-            if (x == 0) {
-                adminView();
-            } else {
-                Menu();
+                // Validate book ID and user ID
+                validateID(bookId, "Book ID");
+                validateID(userId, "User ID");
+
+                int bid = Integer.parseInt(bookId);
+                int uid = Integer.parseInt(userId);
+                int returnStatus = Library1.returnBook(bid, uid);
+
+                if (returnStatus == 1) {
+                    JOptionPane.showMessageDialog(frame, "Returned Book Successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Return Failed!");
+                }
+                if (x == 0) {
+                    adminView();
+                } else {
+                    Menu();
+                }
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors by displaying an error message and allowing user to retry
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+                returnBook(x); // Loop back to returnBook() method
             }
         });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                if (x == 0) {
+                    adminView();
+                } else {
+                    Menu();
+                }
+            }
+        });
+
         // Create panel to hold components
         JPanel returnPanel = new JPanel();
         returnPanel.setLayout(new GridLayout(4, 2));
@@ -685,6 +788,8 @@ public class Main {
         returnPanel.add(userIdLabel);
         returnPanel.add(userIdField);
         returnPanel.add(returnButton);
+        returnPanel.add(ReturnBackButton);
+
         frame.getContentPane().removeAll();
         frame.add(returnPanel, BorderLayout.CENTER);
         frame.revalidate();
@@ -698,18 +803,43 @@ public class Main {
         JTextField userIdField = new JTextField(10);
         JButton returnButton = new JButton("Check Out");
         returnButton.addActionListener(e -> {
-            // Retrieve the entered name and contact information
-            int bid = Integer.parseInt(bookIdField.getText());
-            int uid = Integer.parseInt(userIdField.getText());
-            if (Library1.checkOut(bid, uid) == 1) {
-                JOptionPane.showMessageDialog(frame, "Checked Book Successfully!");
-            } else {
-                JOptionPane.showMessageDialog(frame, "Check out failed!");
+            try {
+                // Retrieve the entered book ID and user ID
+                String bookId = bookIdField.getText();
+                String userId = userIdField.getText();
+
+                // Validate book ID and user ID
+                validateID(bookId, "Book ID");
+                validateID(userId, "User ID");
+
+                int bid = Integer.parseInt(bookId);
+                int uid = Integer.parseInt(userId);
+                if (Library1.checkOut(bid, uid) == 1) {
+                    JOptionPane.showMessageDialog(frame, "Checked Book Successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Check out failed!");
+                }
+                if (x == 0) {
+                    adminView();
+                } else {
+                    Menu();
+                }
+            } catch (IllegalArgumentException ex) {
+                // Handle validation errors by displaying an error message and allowing user to retry
+                JOptionPane.showMessageDialog(frame, ex.getMessage());
+                borrowBook(x); // Loop back to borrowBook() method
             }
-            if (x == 0) {
-                adminView();
-            } else {
-                Menu();
+        });
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                if (x == 0) {
+                    adminView();
+                } else {
+                    Menu();
+                }
             }
         });
         // Create panel to hold components
@@ -720,10 +850,107 @@ public class Main {
         borrowBookPanel.add(userIdLabel);
         borrowBookPanel.add(userIdField);
         borrowBookPanel.add(returnButton);
+        borrowBookPanel.add(ReturnBackButton);
+
         frame.getContentPane().removeAll();
         frame.add(borrowBookPanel, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
+    }
+    public static void forgotID() {
+        JPanel forgotIDPanel = new JPanel(new GridLayout(4,1));
+        JLabel nameLabel = new JLabel("Name:");
+        JLabel contactLabel = new JLabel("Contact Information:");
+        JTextField nameField = new JTextField(20);
+        JTextField contactField = new JTextField(20);
+
+        forgotIDPanel.add(nameLabel);
+        forgotIDPanel.add(nameField);
+        forgotIDPanel.add(contactLabel);
+        forgotIDPanel.add(contactField);
+        JButton ReturnBackButton = new JButton("Go Back");
+        ReturnBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call your function here
+                LoginDetails();
+            }
+        });
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String contactInfo = contactField.getText();
+
+                try {
+                    // Validate name and contact information
+                    validateTextField(name, "Name");
+                    validateContactInfo(contactInfo);
+
+                    // If validation passes, proceed with Library1.forgotID() method call
+                    int temp = Library1.forgotID(name, contactInfo);
+                    if (temp != 0) {
+                        // Show message dialog with the entered information and user ID
+                        JOptionPane.showMessageDialog(frame,
+                                "Name: " + name + "\n" + "Contact Information: " + contactInfo + "\nUser ID: " + temp);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Error Finding ID!");
+                    }
+                    LoginDetails(); // Assuming this method moves to the next step after obtaining user ID
+                } catch (IllegalArgumentException ex) {
+                    // Handle validation errors by displaying an error message and allowing user to retry
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
+            }
+        });
+
+        forgotIDPanel.add(submitButton);
+        forgotIDPanel.add(ReturnBackButton);
+
+        // Display the panel for user input
+        forgotIDPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        frame.getContentPane().removeAll();
+        frame.add(forgotIDPanel, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+    }
+    public static void validateTextField(String text, String fieldName) {
+        if (text == null || text.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty!");
+        }
+
+        // Perform type checking
+        if (!text.matches("[a-zA-Z]+")) {
+            throw new IllegalArgumentException(fieldName + " must contain only alphabets!");
+        }
+
+        // You can add more type checking rules here as needed
+    }
+    public static void validateContactInfo(String contactInfo) {
+        if (contactInfo == null || contactInfo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Contact Information cannot be empty!");
+        }
+
+        // Ensure contact information contains only numerical characters
+        if (!contactInfo.matches("[0-9]+")) {
+            throw new IllegalArgumentException("Contact Information must contain only numerical characters!");
+        }
+
+        // Ensure contact information has a length of 11 characters
+        if (contactInfo.length() != 11) {
+            throw new IllegalArgumentException("Contact Information must be 11 characters long!");
+        }
+    }
+    public static void validateID(String id, String fieldName) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty!");
+        }
+
+        // Ensure the ID contains only numerical characters
+        if (!id.matches("[0-9]+")) {
+            throw new IllegalArgumentException(fieldName + " must contain only numerical characters!");
+        }
     }
     public static void saveData(List<User> users, List<Book> books) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -742,9 +969,17 @@ public class Main {
     }
     public static void loadData(List<User> users, List<Book> books) {
         Gson gson = new Gson();
+        File usersFile = new File(USERS_JSON_FILE);
+        File booksFile = new File(BOOKS_JSON_FILE);
+
+        // Check if files exist
+        if (!usersFile.exists() || !booksFile.exists()) {
+            JOptionPane.showMessageDialog(null, "Welcome! It seems like this is your first time running the program. No data loaded.");
+            return;
+        }
+
         try (Reader reader = new FileReader(USERS_JSON_FILE)) {
-            Type userListType = new TypeToken<ArrayList<User>>() {
-            }.getType();
+            Type userListType = new TypeToken<ArrayList<User>>() {}.getType();
             ArrayList<User> loadedUsers = gson.fromJson(reader, userListType);
             if (loadedUsers != null) {
                 users.addAll(loadedUsers);
@@ -755,8 +990,7 @@ public class Main {
         }
 
         try (Reader reader = new FileReader(BOOKS_JSON_FILE)) {
-            Type bookListType = new TypeToken<ArrayList<Book>>() {
-            }.getType();
+            Type bookListType = new TypeToken<ArrayList<Book>>() {}.getType();
             ArrayList<Book> loadedBooks = gson.fromJson(reader, bookListType);
             if (loadedBooks != null) {
                 books.addAll(loadedBooks);
@@ -765,72 +999,5 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    public static void forgotID() {
-        JPanel forgotID = new JPanel();
-        JLabel nameLabel = new JLabel("Name:");
-        JLabel contactLabel = new JLabel("Contact Information:");
-        JTextField nameField = new JTextField(20);
-        JTextField contactField = new JTextField(20);
-
-        JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String name = nameField.getText();
-
-                String contactInfo = contactField.getText();
-                int temp = 0;
-
-                while (true) {
-                    try {
-                        validateTextField(contactInfo, "Contact Info");
-                        temp = Library1.forgotID(name, contactInfo);
-                        if (temp != 0) {
-                            // Show message dialog with the entered information
-                            JOptionPane.showMessageDialog(frame,
-                                    "Name: " + name + "\n" + "Contact Information: " + contactInfo + "\nUser ID: " + temp);
-                            break; // Break the loop if input is valid and ID is found
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Error Finding ID!");
-                            break; // Break the loop if ID is not found
-                        }
-                    } catch (IllegalArgumentException f) {
-                        // Show error message
-                        JOptionPane.showMessageDialog(frame, "Error: " + f.getMessage());
-                        // Prompt user to enter correct input again
-                        name = JOptionPane.showInputDialog(frame, "Enter Name:");
-                        contactInfo = JOptionPane.showInputDialog(frame, "Enter Contact Info:");
-                    }
-                }
-                LoginDetails();
-            }
-        });
-
-        // Add components to the panel
-        forgotID.add(nameLabel);
-        forgotID.add(nameField);
-        forgotID.add(contactLabel);
-        forgotID.add(contactField);
-        forgotID.add(submitButton);
-
-        frame.getContentPane().removeAll();
-        frame.add(forgotID, BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
-    }
-    public static void validateTextField(String text, String fieldName) {
-        if (text == null || text.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(frame, fieldName + " cannot be empty!");
-            return; // Return from the method if text is empty
-        }
-
-        // Perform type checking
-        if (!text.matches("[a-zA-Z]+")) {
-            JOptionPane.showMessageDialog(frame, fieldName + " must contain only alphabets!");
-        }
-
-        // You can add more type checking rules here as needed
     }
 }
