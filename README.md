@@ -55,33 +55,41 @@ Graphical User Interface (GUI) using Swing:
 
 The application provides a user-friendly graphical interface built using Swing, allowing librarians to interact with the system seamlessly.
 The GUI presents menus and forms for librarians to perform various tasks such as adding books, adding users, checking out books, returning books, and searching for books.
+
 Serialization and Deserialization using Gson:
 
 Gson library is utilized to serialize and deserialize ArrayLists of users and books.
 Serialized data is saved to files to ensure persistence between application runs.
 Deserialization loads previously saved data, enabling the system to resume its state from the previous session.
+
 Error Handling:
 
 Robust error handling mechanisms are implemented to gracefully manage invalid user inputs and edge cases.
 Error messages are displayed to alert users about incorrect inputs or unexpected scenarios, guiding them to rectify errors effectively.
+
 Validation Checks:
 
 Validation checks are incorporated to ensure that data entered by librarians is accurate and follows the required format.
 Validations are performed on inputs such as book details, user information, and search queries to maintain data integrity and consistency.
+
 Menu-Driven Interface:
 
 The main class (LibraryManagementSystem) provides a menu-driven interface, allowing librarians to easily navigate through different functionalities of the system.
 Librarians can select desired actions from the menu, triggering corresponding methods to perform tasks efficiently.
+
 Adding and Managing Books:
 
 Librarians can add new books to the library by providing details such as book ID, title, author, genre, and availability status.
 The system allows librarians to update book details, ensuring accurate and up-to-date information is maintained.
+
 Managing Users and Borrowed Books:
 
 Librarians can add new users to the system, including details such as user ID, name, and contact information.
 The application facilitates checking out books to users and returning books, updating the borrowed book lists for each user accordingly.
+
 Search Functionality:
 
 Librarians can search for books by title, author, or user ID, enabling quick and efficient retrieval of relevant information.
 The search feature enhances the usability of the system by providing librarians with targeted results based on their queries.
+
 Overall, the Library Management System integrates various features and functionalities to streamline library operations, enhance user experience, and ensure the smooth management of library resources and user accounts. The combination of GUI, serialization, error handling, validation, and menu-driven interface contributes to the effectiveness and reliability of the system.
