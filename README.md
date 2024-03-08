@@ -1,11 +1,10 @@
-## CS212-Assignment-01
-**Library Management System Using OOP**
+# CS212-Assignment-01: Library Management System Using OOP
 
 The Library Management System is a Java application designed to facilitate the management of a library's resources and users. It offers librarians a graphical interface to perform various tasks such as adding new books, updating book details, checking out books to users, managing user accounts, and searching for books by title or author. Moreover, it allows users themselves to borrow, return and search books without the aid of the librarian. The system also incorporates file-based data persistence to store book and user information between application runs, ensuring data continuity.
 
-#### Setup and Run Instructions
+## Setup and Run Instructions
 
-**Option 1: Using IntelliJ IDEA (Recommended)**
+### Option 1: Using IntelliJ IDEA (Recommended)
 
 **Prerequisites:**
 - IntelliJ IDEA 2023.3 (or later version) installed on your system.
@@ -20,7 +19,7 @@ The Library Management System is a Java application designed to facilitate the m
 1. Locate the main class of the project, typically the class containing the main method.
 2. Click on the "Run" button in the toolbar or right-click on the main class file and select "Run <MainClassName>" from the context menu.
 
-**Option 2: Command-Line Compilation and Execution**
+### Option 2: Command-Line Compilation and Execution
 
 **Prerequisites:**
 - JDK 21 installed on your system.
