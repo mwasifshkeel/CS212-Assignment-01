@@ -36,7 +36,7 @@ Open a terminal or command prompt and navigate to the root directory of the proj
 
 Compilation:
 
-javac -d OUT -cp Dependencies/gson-2.10.1.jar src/Assignment01/Main.java src/Assignment01/Class1.java src/Assignment01/Class2.java
+javac -d OUT -cp Dependencies/gson-2.10.1.jar src/Assignment01/Main.java src/Assignment01/User.java src/Assignment01/Book.java src/Assignment01/Library.java
 
 Running the Program:
 
