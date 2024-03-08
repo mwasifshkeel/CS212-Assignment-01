@@ -303,7 +303,8 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve the entered user ID
-                String idText = passwordField.getText();
+                char[] passwordChars = passwordField.getPassword();
+                String idText = new String(passwordChars);
                 //Validate and Check If Password is Correct
                 try {
                     librarianPass = Integer.parseInt(idText);
