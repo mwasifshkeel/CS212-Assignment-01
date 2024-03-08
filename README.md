@@ -42,7 +42,7 @@ Ensure that you have set up your environment variables properly to point to the 
 
 By following either of these methods, you should be able to successfully set up and run the project locally on your machine. If you encounter any issues during the setup or execution process, feel free to reach out for assistance.
 
-#### Key Features and Functionalities Implemented:
+### Key Features and Functionalities Implemented:
 
 **Graphical User Interface (GUI) using Swing:**
 - The application provides a user-friendly graphical interface built using Swing, allowing librarians to interact with the system seamlessly.
