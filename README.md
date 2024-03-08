@@ -1,4 +1,4 @@
-### CS212-Assignment-01
+## CS212-Assignment-01
 **Library Management System Using OOP**
 
 The Library Management System is a Java application designed to facilitate the management of a library's resources and users. It offers librarians a graphical interface to perform various tasks such as adding new books, updating book details, checking out books to users, managing user accounts, and searching for books by title or author. Moreover, it allows users themselves to borrow, return and search books without the aid of the librarian. The system also incorporates file-based data persistence to store book and user information between application runs, ensuring data continuity.
