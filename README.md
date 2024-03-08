@@ -18,6 +18,7 @@ Running the Project:
 
 Locate the main class of the project, typically the class containing the main method.
 Click on the "Run" button in the toolbar or right-click on the main class file and select "Run <MainClassName>" from the context menu.
+
 Option 2: Command-Line Compilation and Execution
 
 Prerequisites:
