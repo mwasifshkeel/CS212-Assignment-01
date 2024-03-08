@@ -3,6 +3,8 @@ Library Management System Using OOP
 
 The Library Management System is a Java application designed to facilitate the management of a library's resources and users. It offers librarians a graphical interface to perform various tasks such as adding new books, updating book details, checking out books to users, managing user accounts, and searching for books by title or author. Moreover, it allows users themselves to borrow, return and search books without the aid of librarian. The system also incorporates file-based data persistence to store book and user information between application runs, ensuring data continuity.
 
+
+
 To set up and run the project locally, you have two options based on your preference and environment. Below are the instructions for each method:
 
 Option 1: Using IntelliJ IDEA (Recommended)
@@ -21,6 +23,7 @@ Running the Project:
 Locate the main class of the project, typically the class containing the main method.
 Click on the "Run" button in the toolbar or right-click on the main class file and select "Run <MainClassName>" from the context menu.
 
+
 Option 2: Command-Line Compilation and Execution
 
 Prerequisites:
@@ -38,9 +41,13 @@ javac -d OUT -cp Dependencies/gson-2.10.1.jar src/Assignment01/Main.java src/Ass
 Running the Program:
 
 java -cp "OUT;Dependencies/gson-2.10.1.jar" Assignment01.Main
+
 Ensure that you have set up your environment variables properly to point to the JDK installation directory. You can verify your JDK installation by running java -version and javac -version commands in your terminal or command prompt.
 
 By following either of these methods, you should be able to successfully set up and run the project locally on your machine. If you encounter any issues during the setup or execution process, feel free to reach out for assistance.
+
+
+
 
 Key Features and Functionalities Implemented:
 
