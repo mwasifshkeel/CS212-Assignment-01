@@ -1,7 +1,6 @@
 package Assignment01;
 import java.awt.*;
 import java.io.*;
-import java.lang.Throwable;
 import java.awt.event.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -183,7 +182,9 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Method to Create User
     public static void createUser(int x) {
+        //GUI
         JPanel userInfoPanel = new JPanel(new GridLayout(3, 2));
 
         JLabel nameLabel = new JLabel("Name:");
@@ -242,7 +243,9 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Method to Login as a User
     public static void login() {
+        //GUI
         JPanel loginPanel = new JPanel(new GridLayout(2, 2));
 
         JLabel idLabel = new JLabel("User ID:");
@@ -288,9 +291,11 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Method to Login as Librarian
     public static void Authenticate() {
+        //GUI
         JPanel AdminLoginPanel = new JPanel(new GridLayout(2, 2));
-        JLabel idLabel = new JLabel("Password: ");
+        JLabel idLabel = new JLabel("Password: (2005)");
         JPasswordField passwordField = new JPasswordField();
         JButton loginButton = new JButton("Login");
 
@@ -299,7 +304,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 // Retrieve the entered user ID
                 String idText = passwordField.getText();
-
+                //Validate and Check If Password is Correct
                 try {
                     librarianPass = Integer.parseInt(idText);
                     if (librarianPass == 2005) {
@@ -333,9 +338,12 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Display Menu to Librarian
     public static void adminView() {
+        //GUI
         JPanel NewMenuPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         JButton addBookButton = new JButton("Add Book");
+        //Calls addBook()
         addBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -343,6 +351,7 @@ public class Main {
             }
         });
         JButton removeBookButton = new JButton("Remove Book");
+        //Calls removeBook()
         removeBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -350,6 +359,7 @@ public class Main {
             }
         });
         JButton removeUserButton = new JButton("Remove User");
+        //Calls removeUser()
         removeUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -357,6 +367,7 @@ public class Main {
             }
         });
         JButton addUserButton = new JButton("Add User");
+        //Calls createUser()
         addUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -364,6 +375,7 @@ public class Main {
             }
         });
         JButton lookCatalogButton = new JButton("Book Collection");
+        //Calls ShowBookCollection()
         lookCatalogButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -371,6 +383,7 @@ public class Main {
             }
         });
         JButton borrowBookButton = new JButton("Borrow Book");
+        //Calls borrowBook()
         borrowBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -379,12 +392,14 @@ public class Main {
         });
 
         JButton searchBookButton = new JButton("Search Book");
+        //Calls searchBook()
         searchBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchBook(1);
             }
         });
+        //Calls returnBook()
         JButton returnBookButton = new JButton("Return Book");
         returnBookButton.addActionListener(new ActionListener() {
             @Override
@@ -429,6 +444,7 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Display Registered Books in Library
     public static void displayBookCollection(int x) {
         JPanel bookcatalog = new JPanel();
         DefaultTableModel tableModel = new DefaultTableModel() {
@@ -473,7 +489,9 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Remove User
     public static void removeUser() {
+        //GUI
         JPanel removeUserPanel = new JPanel(new GridLayout(3, 1));
         JLabel idLabel = new JLabel("ID:");
         JTextField idField = new JTextField();
@@ -515,7 +533,9 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Register Book in Library
     public static void addBook() {
+        //GUI
         JPanel addBookPanel = new JPanel(new GridLayout(4, 1));
 
         JLabel nameLabel = new JLabel("Title:");
@@ -570,7 +590,9 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Remove Book
     public static void removeBook() {
+        //GUI
         JPanel removeBookPanel = new JPanel(new GridLayout(2, 1));
 
         JLabel idLabel = new JLabel("Book ID:");
@@ -622,6 +644,7 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Search Book in Library
     public static void searchBook(int x) {
         JCheckBox authorCheckbox = new JCheckBox("Search by Author");
         JCheckBox titleCheckbox = new JCheckBox("Search by Title");
@@ -730,6 +753,7 @@ public class Main {
             }
         }
     }
+    //Method that allows User to return borrowed book
     public static void returnBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
@@ -795,14 +819,15 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Method that allows User to borrow book
     public static void borrowBook(int x) {
         // Create components
         JLabel bookIdLabel = new JLabel("Book ID:");
         JTextField bookIdField = new JTextField(10);
         JLabel userIdLabel = new JLabel("User ID:");
         JTextField userIdField = new JTextField(10);
-        JButton returnButton = new JButton("Check Out");
-        returnButton.addActionListener(e -> {
+        JButton borrowButton = new JButton("Check Out");
+        borrowButton.addActionListener(e -> {
             try {
                 // Retrieve the entered book ID and user ID
                 String bookId = bookIdField.getText();
@@ -849,7 +874,7 @@ public class Main {
         borrowBookPanel.add(bookIdField);
         borrowBookPanel.add(userIdLabel);
         borrowBookPanel.add(userIdField);
-        borrowBookPanel.add(returnButton);
+        borrowBookPanel.add(borrowButton);
         borrowBookPanel.add(ReturnBackButton);
 
         frame.getContentPane().removeAll();
@@ -857,6 +882,7 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Allows user to restore ID
     public static void forgotID() {
         JPanel forgotIDPanel = new JPanel(new GridLayout(4,1));
         JLabel nameLabel = new JLabel("Name:");
@@ -880,6 +906,7 @@ public class Main {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Extract name and contact info
                 String name = nameField.getText();
                 String contactInfo = contactField.getText();
 
@@ -915,6 +942,7 @@ public class Main {
         frame.revalidate();
         frame.repaint();
     }
+    //Method for validation,error handling
     public static void validateTextField(String text, String fieldName) {
         if (text == null || text.trim().isEmpty()) {
             throw new IllegalArgumentException(fieldName + " cannot be empty!");
@@ -924,9 +952,8 @@ public class Main {
         if (!text.matches("[a-zA-Z]+")) {
             throw new IllegalArgumentException(fieldName + " must contain only alphabets!");
         }
-
-        // You can add more type checking rules here as needed
     }
+    //Method for validation,error handling
     public static void validateContactInfo(String contactInfo) {
         if (contactInfo == null || contactInfo.trim().isEmpty()) {
             throw new IllegalArgumentException("Contact Information cannot be empty!");
@@ -942,6 +969,7 @@ public class Main {
             throw new IllegalArgumentException("Contact Information must be 11 characters long!");
         }
     }
+    //Method for validation,error handling
     public static void validateID(String id, String fieldName) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException(fieldName + " cannot be empty!");
@@ -952,52 +980,56 @@ public class Main {
             throw new IllegalArgumentException(fieldName + " must contain only numerical characters!");
         }
     }
+    // Method to save data to JSON files
     public static void saveData(List<User> users, List<Book> books) {
+        // Create Gson instance with pretty printing enabled
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try (Writer writer = new FileWriter(USERS_JSON_FILE)) {
+        try (Writer writer = new FileWriter(USERS_JSON_FILE)) { // Write users to file
             gson.toJson(users, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print stack trace if an exception occurs
         }
 
-        try (Writer writer = new FileWriter(BOOKS_JSON_FILE)) {
+        try (Writer writer = new FileWriter(BOOKS_JSON_FILE)) { // Write books to file
             gson.toJson(books, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print stack trace if an exception occurs
         }
     }
+    // Method to load data from JSON files
     public static void loadData(List<User> users, List<Book> books) {
-        Gson gson = new Gson();
-        File usersFile = new File(USERS_JSON_FILE);
-        File booksFile = new File(BOOKS_JSON_FILE);
+        Gson gson = new Gson(); // Create Gson instance
+        File usersFile = new File(USERS_JSON_FILE); // Create File instance for users JSON file
+        File booksFile = new File(BOOKS_JSON_FILE); // Create File instance for books JSON file
 
         // Check if files exist
         if (!usersFile.exists() || !booksFile.exists()) {
+            // If files do not exist, show a welcome message
             JOptionPane.showMessageDialog(null, "Welcome! It seems like this is your first time running the program. No data loaded.");
             return;
         }
 
-        try (Reader reader = new FileReader(USERS_JSON_FILE)) {
+        try (Reader reader = new FileReader(USERS_JSON_FILE)) { // Read users from file
             Type userListType = new TypeToken<ArrayList<User>>() {}.getType();
-            ArrayList<User> loadedUsers = gson.fromJson(reader, userListType);
+            ArrayList<User> loadedUsers = gson.fromJson(reader, userListType); // Deserialize JSON to User objects
             if (loadedUsers != null) {
-                users.addAll(loadedUsers);
-                nu = loadedUsers.size() + 1;
+                users.addAll(loadedUsers); // Add loaded users to the provided list
+                nu = loadedUsers.size() + 1; // Update user count
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print stack trace if an exception occurs
         }
 
-        try (Reader reader = new FileReader(BOOKS_JSON_FILE)) {
+        try (Reader reader = new FileReader(BOOKS_JSON_FILE)) { // Read books from file
             Type bookListType = new TypeToken<ArrayList<Book>>() {}.getType();
-            ArrayList<Book> loadedBooks = gson.fromJson(reader, bookListType);
+            ArrayList<Book> loadedBooks = gson.fromJson(reader, bookListType); // Deserialize JSON to Book objects
             if (loadedBooks != null) {
-                books.addAll(loadedBooks);
-                bu = loadedBooks.size() + 1;
+                books.addAll(loadedBooks); // Add loaded books to the provided list
+                bu = loadedBooks.size() + 1; // Update book count
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print stack trace if an exception occurs
         }
     }
 }

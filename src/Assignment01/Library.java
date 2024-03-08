@@ -129,6 +129,7 @@ public class Library {
         Iterator<User> iterator = Users.iterator();
         while (iterator.hasNext()) {
             User i = iterator.next();
+            //Sets the availability of all books held by the user to true
             if (i.GetUserID() == userID) {
                 List<Book> temp = i.RetrieveBorrowedBooks();
                 for (Book u : temp) {
@@ -144,12 +145,12 @@ public class Library {
         }
         return finish;
     }
-
     //Removes Book from ArrayList Books
     public int removeBook(int BookID) {
         int finish = 0;
         for (Book i : Books) {
             if (i.GetBookID() == BookID) {
+                //Checks if Book was borrowed by any user and removes it from him
                 for (User j : Users) {
                     List<Book> temp = j.RetrieveBorrowedBooks();
                     Iterator<Book> iterator = temp.iterator();
