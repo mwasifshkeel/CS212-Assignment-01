@@ -43,12 +43,14 @@ The Library Management System is a Java application designed to facilitate the m
 
 #### Compilation
 
+-
     ```bash
     javac -d OUT -cp Dependencies/gson-2.10.1.jar src/Assignment01/Main.java src/Assignment01/User.java src/Assignment01/Book.java src/Assignment01/Library.java
     ```
 
 #### Running the Program
 
+-
     ```bash
     java -cp "OUT;Dependencies/gson-2.10.1.jar" Assignment01.Main
     ```
