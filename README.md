@@ -16,7 +16,7 @@ The Library Management System is a Java application designed to facilitate the m
 
 1. Clone the project repository from the source, or download it as a ZIP archive and extract it to your local machine.
     ```bash
-    git clone https://github.com/yourusername/library-management-system.git
+    git clone https://github.com/mwasifshkeel/library-management-system.git
     ```
 2. Launch IntelliJ IDEA 2023.3 on your computer.
 3. Open the project by selecting "Open Project" from the welcome screen or navigating to `File > Open` and selecting the project directory.
