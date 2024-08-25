@@ -16,7 +16,7 @@ The Library Management System is a Java application designed to facilitate the m
 
 1. Clone the project repository from the source, or download it as a ZIP archive and extract it to your local machine.
     ```bash
-    git clone https://github.com/mwasifshkeel/library-management-system.git
+    git clone https://github.com/mwasifshkeel/CS212-Assignment-01.git
     ```
 2. Launch IntelliJ IDEA 2023.3 on your computer.
 3. Open the project by selecting "Open Project" from the welcome screen or navigating to `File > Open` and selecting the project directory.
@@ -25,7 +25,7 @@ The Library Management System is a Java application designed to facilitate the m
 #### Running the Project
 
 1. Locate the main class of the project, typically the class containing the `main` method.
-2. Click on the "Run" button in the toolbar or right-click on the main class file and select `Run <MainClassName>` from the context menu.
+2. Click on the "Run" button in the toolbar or right-click on the main class file and select `Run Main.java` from the context menu.
 
 ### Option 2: Command-Line Compilation and Execution
 
@@ -37,7 +37,7 @@ The Library Management System is a Java application designed to facilitate the m
 
 1. Clone the project repository from the source, or download it as a ZIP archive and extract it to your local machine.
     ```bash
-    git clone https://github.com/yourusername/library-management-system.git
+    git clone https://github.com/mwasifshkeel/CS212-Assignment-01.git
     ```
 2. Open a terminal or command prompt and navigate to the root directory of the project.
 
