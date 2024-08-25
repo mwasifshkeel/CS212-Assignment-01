@@ -83,7 +83,7 @@ By following either of these methods, you should be able to successfully set up 
 
 
 5. **Menu-Driven Interface**:
-    - The main class (`LibraryManagementSystem`) provides a menu-driven interface, allowing librarians to easily navigate through different functionalities of the system.
+    - The main class (`Main`) provides a menu-driven interface, allowing librarians to easily navigate through different functionalities of the system.
     - Librarians can select desired actions from the menu, triggering corresponding methods to perform tasks efficiently.
 
 
